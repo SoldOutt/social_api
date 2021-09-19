@@ -1,6 +1,7 @@
 // const User = mongoose.model('User', UserSchema);
 
 const { Schema } = require('mongoose')
+const mongoose = require('mongoose')
 
 const UserSchema = new Schema(
     {
@@ -31,6 +32,22 @@ const UserSchema = new Schema(
         isAdmin: {
             type: Boolean,
             default: false,
+        },
+        desc: {
+            type: String,
+            max: 50,
+        },
+        city: {
+            type: String,
+            max: 50,
+        },
+        from: {
+            type: String,
+            max: 50,
+        },
+        relationships: {
+            type: Number,
+            enum: [1, 2, 3],
         },
     },
     { timestamps: true }
