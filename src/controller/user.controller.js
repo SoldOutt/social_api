@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 const userController = {
     //updateuser
-    async updateuser(req, res) {
+    async updateUser(req, res) {
         try {
             const id = req.params.id
             const user = await userModel.findById(id).exec()
@@ -87,6 +87,65 @@ const userController = {
         }
     },
     //follow user
+    async followUser(req, res) {
+        try {
+            const userId = req.params.id
+
+            const userCurrent = await userModel.findById(req.body.id)
+            const user = await userModel.findById(userId)
+            if (!user)
+                return res
+                    .status(400)
+                    .json({ success: false, message: 'User not found' })
+            if (user.followers.includes(userCurrent._id)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'You are following this user.',
+                })
+            } else {
+                await user.updateOne({ $push: { followers: userCurrent._id } })
+                await userCurrent.updateOne({
+                    $push: { followings: user._id },
+                })
+                res.json({
+                    success: true,
+                    message: 'You have been following this user.',
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false, message: error.message })
+        }
+    },
     //unfollow user
+    async unfollowUser(req, res) {
+        try {
+            const userId = req.params.id
+            const userCurrent = await userModel.findById(req.body.id)
+            const user = await userModel.findById(userId)
+            if (!user || !userCurrent)
+                return res
+                    .status(400)
+                    .json({ success: false, message: 'User not found' })
+            if (!user.followers.includes(userCurrent._id)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'You are not following this user',
+                })
+            } else {
+                await user.updateOne({ $pull: { followers: userCurrent._id } })
+                await userCurrent.updateOne({
+                    $pull: { followings: user._id },
+                })
+                res.json({
+                    success: true,
+                    message: 'You have been unfollowing this user.',
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false, message: error.message })
+        }
+    },
 }
 module.exports = userController
