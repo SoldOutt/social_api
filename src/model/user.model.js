@@ -9,13 +9,13 @@ const UserSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            min: 3,
-            max: 50,
+            minLength: 3,
+            maxLength: 50,
         },
         email: {
             type: String,
             required: true,
-            min: 10,
+            minLength: 10,
         },
         password: {
             type: String,
@@ -35,17 +35,17 @@ const UserSchema = new Schema(
         },
         desc: {
             type: String,
-            max: 50,
+            maxLength: 50,
             default: '',
         },
         city: {
             type: String,
-            max: 50,
+            maxLength: 50,
             default: '',
         },
         from: {
             type: String,
-            max: 50,
+            maxLength: 50,
             default: '',
         },
         relationships: {
