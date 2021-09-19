@@ -1,0 +1,16 @@
+
+
+
+###
+
+GET http://localhost:7000/users/
+
+
+###
+POST http://localhost/7000/auth/register
+
+{
+    "username": "nguyenvannam",
+    "email": "nguyenvannam@gmail.com",
+    "password": "nguyennam"
+}
