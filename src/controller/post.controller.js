@@ -1,4 +1,5 @@
 const postModel = require('../model/post.model')
+const userModel = require('../model/user.model')
 const postController = {
     //get a post
     async getPost(req, res) {
@@ -111,7 +112,7 @@ const postController = {
                 .json({ success: false, message: error.message })
         }
     },
-    //like post
+    //like-unlike post
     async likePost(req, res) {
         try {
             const postId = req.params.id
@@ -147,6 +148,26 @@ const postController = {
                 .json({ success: false, message: error.message })
         }
     },
-    //unlike post
+    //timline post
+    async getTimeline(req, res) {
+        try {
+            const user = await userModel.findById(req.user.id)
+            const currentPost = await postModel.find({ userId: user.id })
+
+            const friendPost = await Promise.all(
+                user.followings.map((friendId) => {
+                    return postModel.find({ userId: friendId })
+                })
+            )
+            console.log(friendPost)
+            const postTimeline = currentPost.concat(...friendPost)
+            return res.json({ success: true, postTimeline })
+        } catch (error) {
+            console.log(error)
+            return res
+                .status(500)
+                .json({ success: false, message: error.message })
+        }
+    },
 }
 module.exports = postController
